@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAminityPlaceTable extends Migration
+class CreateAmenityPlaceTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAminityPlaceTable extends Migration
    */
   public function up()
   {
-    Schema::create('aminity_place', function (Blueprint $table) {
+    Schema::create('amenity_place', function (Blueprint $table) {
       $table->id();
       $table->unsignedBigInteger('amenity_id');
       $table->unsignedBigInteger('place_id');
@@ -30,6 +30,6 @@ class CreateAminityPlaceTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('aminity_place');
+    Schema::dropIfExists('amenity_place');
   }
 }

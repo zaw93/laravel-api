@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Place extends Model
+class Place extends Model implements HasMedia
 {
+  use InteractsWithMedia;
+
   protected $fillable = [
     'title',
     'description',
@@ -36,5 +40,17 @@ class Place extends Model
   public function amenities()
   {
     return $this->belongsToMany('App\Amenity');
+  }
+
+  public function photosUrl()
+  {
+    $mediaItems = $this->getMedia('photos');
+    $photos = [];
+
+    foreach ($mediaItems as $item) {
+      $photos[] = $item->getUrl();
+    }
+
+    return $photos;
   }
 }
