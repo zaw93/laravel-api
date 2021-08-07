@@ -16,9 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
+
+Route::post('/register', 'Api\AuthController@register');
+Route::post('/login', 'Api\AuthController@login');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+  Route::post('/me', 'Api\AuthController@me');
+
+  Route::post('/logout', 'Api\AuthController@logout');
 });
+
+
 
 Route::get('users', function (Request $request) {
   $users = User::all();
@@ -26,4 +34,15 @@ Route::get('users', function (Request $request) {
   return UserResource::collection($users);
 });
 
-Route::apiResource('places', 'Api\PlaceController');
+// Route::apiResource('places', 'Api\PlaceController');
+
+Route::get('places', 'Api\PlaceController@index');
+Route::get('places/{place}', 'Api\PlaceController@show');
+
+
+
+Route::middleware(['auth:sanctum'])->group(function () {
+  Route::post('places', 'Api\PlaceController@store');
+  Route::put('places/{place}', 'Api\PlaceController@update');
+  Route::delete('places/{place}', 'Api\PlaceController@destroy');
+});
