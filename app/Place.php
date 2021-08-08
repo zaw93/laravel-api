@@ -42,6 +42,11 @@ class Place extends Model implements HasMedia
     return $this->belongsToMany('App\Amenity');
   }
 
+  public function bookings()
+  {
+    return $this->hasMany('App\Booking');
+  }
+
   public function photosUrl()
   {
     $mediaItems = $this->getMedia('photos');

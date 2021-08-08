@@ -32,7 +32,8 @@ class PlaceResource extends JsonResource
       'bedroom' => $this->bedroom,
       'bed' => $this->bed,
       'bath' => $this->bath,
-      'amenities' => AmenityResource::collection($this->amenities),
+      // 'amenities' => AmenityResource::collection($this->amenities),
+      'amenities' => $this->amenities()->pluck('name'),
       'photos' => $this->photosUrl(),
     ];
   }

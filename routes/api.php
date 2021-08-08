@@ -38,6 +38,7 @@ Route::get('users', function (Request $request) {
 
 Route::get('places', 'Api\PlaceController@index');
 Route::get('places/{place}', 'Api\PlaceController@show');
+Route::get('feature-places', 'Api\PlaceController@featuredPlaces');
 
 
 
@@ -45,4 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::post('places', 'Api\PlaceController@store');
   Route::put('places/{place}', 'Api\PlaceController@update');
   Route::delete('places/{place}', 'Api\PlaceController@destroy');
+
+
+  Route::apiResource('/bookings', 'Api\BookingController');
 });

@@ -19,7 +19,20 @@ class PlaceController extends Controller
    */
   public function index()
   {
-    $places = Place::all();
+    $places = Place::paginate(5);
+
+    return new PlaceCollection($places);
+  }
+
+  /**
+   * Display a listing of the featured resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function featuredPlaces()
+  {
+    // $places = Place::all()->random(8);
+    $places = Place::all()->take(8);
 
     return new PlaceCollection($places);
   }
@@ -44,8 +57,8 @@ class PlaceController extends Controller
         }
       }
 
-      if ($request->hasFile('photo')) {
-        $fileAdders = $place->addMultipleMediaFromRequest(['photo'])
+      if ($request->hasFile('photos')) {
+        $fileAdders = $place->addMultipleMediaFromRequest(['photos'])
           ->each(function ($fileAdder) {
             $fileAdder->toMediaCollection('photos');
           });
@@ -107,12 +120,12 @@ class PlaceController extends Controller
         $place->amenities()->sync($amenityIds);
       }
 
-      if ($request->hasFile('photo')) {
+      if ($request->hasFile('photos')) {
         // Delet exisiting photos first
         $place->clearMediaCollection('photos');
 
         // Upload new photos
-        $fileAdders = $place->addMultipleMediaFromRequest(['photo'])
+        $fileAdders = $place->addMultipleMediaFromRequest(['photos'])
           ->each(function ($fileAdder) {
             $fileAdder->toMediaCollection('photos');
           });
