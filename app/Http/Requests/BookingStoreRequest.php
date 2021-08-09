@@ -28,7 +28,7 @@ class BookingStoreRequest extends FormRequest
       'checkout' => 'required|date',
       'guest_count' => 'required|integer',
       'total_price' => 'required|integer',
-      'status' => 'required|integer',
+      'status' => 'integer',
       'user_id' => 'required|integer',
       'place_id' => 'required|integer',
     ];

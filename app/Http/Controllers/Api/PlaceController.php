@@ -20,6 +20,7 @@ class PlaceController extends Controller
   public function index()
   {
     $places = Place::paginate(5);
+    // $places = Place::all();
 
     return new PlaceCollection($places);
   }
@@ -31,8 +32,7 @@ class PlaceController extends Controller
    */
   public function featuredPlaces()
   {
-    // $places = Place::all()->random(8);
-    $places = Place::all()->take(8);
+    $places = Place::all()->random(8);
 
     return new PlaceCollection($places);
   }

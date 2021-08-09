@@ -29,7 +29,15 @@ class BookingController extends Controller
   public function store(BookingStoreRequest $request)
   {
     $data = DB::transaction(function () use ($request) {
-      $booking = Booking::create($request->all());
+      $booking = Booking::create([
+        'checkin' => $request->checkin,
+        'checkout' => $request->checkout,
+        'guest_count' => $request->guest_count,
+        'total_price' => $request->total_price,
+        'status' => 0,
+        'user_id' => $request->user_id,
+        'place_id' => $request->place_id
+      ]);
 
       if ($booking) {
         $booking->place->availability = 'booked';
