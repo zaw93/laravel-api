@@ -2,15 +2,16 @@
 
 namespace App;
 
-use __PHP_Incomplete_Class;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-  use Notifiable, HasApiTokens;
+  use Notifiable, HasApiTokens, InteractsWithMedia;
 
   /**
    * The attributes that are mass assignable.
@@ -47,5 +48,10 @@ class User extends Authenticatable
   public function bookings()
   {
     return $this->hasMany('App\Booking');
+  }
+
+  public function reservations()
+  {
+    return $this->hasManyThrough('App\Booking', 'App\Place', 'user_id', 'place_id', 'id', 'id');
   }
 }

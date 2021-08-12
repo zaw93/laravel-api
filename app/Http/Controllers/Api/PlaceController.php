@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PlaceResource;
 use App\Http\Resources\PlaceCollection;
 use App\Http\Requests\PlaceStoreRequest;
+use App\Http\Requests\PlaceUpdateRequest;
 
 class PlaceController extends Controller
 {
@@ -19,7 +20,7 @@ class PlaceController extends Controller
    */
   public function index()
   {
-    $places = Place::paginate(5);
+    $places = Place::with('user')->orderBy('created_at', 'desc')->paginate(5);
     // $places = Place::all();
 
     return new PlaceCollection($places);
@@ -50,7 +51,7 @@ class PlaceController extends Controller
       $place = Place::create($request->except('amenities'));
 
       if ($request->has('amenities')) {
-        $amenityIds = $request->input('amenities');
+        $amenityIds = json_decode($request->amenities);
 
         foreach ($amenityIds as $id) {
           $place->amenities()->attach($id);
@@ -80,7 +81,7 @@ class PlaceController extends Controller
    */
   public function show($id)
   {
-    $place = Place::findOrFail($id);
+    $place = Place::with('user')->findOrFail($id);
 
     return new PlaceResource($place);
   }
@@ -92,7 +93,7 @@ class PlaceController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(PlaceStoreRequest $request, $id)
+  public function update(PlaceUpdateRequest $request, $id)
   {
     $data = DB::transaction(function () use ($request, $id) {
       $place = Place::findOrFail($id);
@@ -115,13 +116,13 @@ class PlaceController extends Controller
 
 
       if ($request->has('amenities')) {
-        $amenityIds = $request->input('amenities');
+        $amenityIds = json_decode($request->amenities);
 
         $place->amenities()->sync($amenityIds);
       }
 
       if ($request->hasFile('photos')) {
-        // Delet exisiting photos first
+        // Delete exisiting photos first
         $place->clearMediaCollection('photos');
 
         // Upload new photos
@@ -153,8 +154,6 @@ class PlaceController extends Controller
 
     $place->delete();
 
-    return response()->json([
-      'success' => true,
-    ]);
+    return response(['message' => 'You have successfully deleted your lisitng'], 204);
   }
 }

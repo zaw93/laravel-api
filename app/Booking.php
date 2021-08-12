@@ -14,6 +14,7 @@ class Booking extends Model
     'status',
     'user_id',
     'place_id',
+    'confirmation_code'
   ];
 
   public function user()

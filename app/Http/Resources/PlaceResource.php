@@ -20,7 +20,7 @@ class PlaceResource extends JsonResource
       'id' => $this->id,
       'title' => $this->title,
       'description' => $this->description,
-      'user' => new UserResource($this->user),
+      'user' => new UserResource($this->whenLoaded('user')),
       'type' => $this->type->name,
       'availability' => $this->availability,
       'price' => $this->price,
@@ -35,6 +35,7 @@ class PlaceResource extends JsonResource
       // 'amenities' => AmenityResource::collection($this->amenities),
       'amenities' => $this->amenities()->pluck('name'),
       'photos' => $this->photosUrl(),
+      'published_date' => $this->created_at->toFormattedDateString()
     ];
   }
 }

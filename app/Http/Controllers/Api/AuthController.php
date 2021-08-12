@@ -68,4 +68,56 @@ class AuthController extends Controller
 
     return response(['message' => 'You have been successfully logged out.'], 200);
   }
+
+  public function uploadProfilePhoto(Request $request)
+  {
+    $user = $request->user();
+
+    if ($request->hasFile('photo')) {
+      $user->clearMediaCollection('profile');
+    }
+
+    $user->addMediaFromRequest('photo')->toMediaCollection('profile');
+
+    return new UserResource($user);
+  }
+
+  public function updateProfile(Request $request)
+  {
+    $user = $request->user();
+
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'birthdate' => 'required|date|unique:users,birthdate,' . $user->id,
+      'phone' => 'required|string|max:255|unique:users,phone,' . $user->id,
+      'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+    ]);
+
+    $user->name = $request->name;
+    $user->birthdate = $request->birthdate;
+    $user->phone = $request->phone;
+    $user->email = $request->email;
+    $user->save();
+
+    return new UserResource($user);
+  }
+
+  public function updatePassword(Request $request)
+  {
+    $user = $request->user();
+
+    $request->validate([
+      'password' => 'required|string|min:8',
+      'new_password' => 'required|string|min:8|confirmed'
+    ]);
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+      return response(['message' => 'Your current password is incorrect'], 401);
+    }
+
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return response(['message' => 'You have successfully updated your password'], 200);
+  }
 }

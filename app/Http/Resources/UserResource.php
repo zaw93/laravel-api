@@ -20,6 +20,7 @@ class UserResource extends JsonResource
       'birthdate' => $this->birthdate,
       'phone' => $this->phone,
       'email' => $this->email,
+      'photo' => $this->getFirstMediaUrl('profile'),
     ];
   }
 }

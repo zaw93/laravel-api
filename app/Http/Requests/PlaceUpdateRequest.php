@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlaceStoreRequest extends FormRequest
+class PlaceUpdateRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -23,8 +23,10 @@ class PlaceStoreRequest extends FormRequest
    */
   public function rules()
   {
+    $place = $this->route('place');
+
     return [
-      'title' => 'required|unique:places,title|max:255',
+      'title' => 'required|unique:places,title, ' . $place->id . '|max:255',
       'description' => 'required',
       'user_id' => 'required|integer',
       'type_id' => 'required|integer',

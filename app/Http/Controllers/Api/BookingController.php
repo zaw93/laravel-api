@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\BookingStoreRequest;
+use App\Http\Resources\BookingCollection;
 
 class BookingController extends Controller
 {
@@ -16,8 +17,11 @@ class BookingController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
+    $bookings = $request->user()->bookings()->with('place.user')->orderBy('created_at', 'desc')->paginate(5);
+
+    return new BookingCollection($bookings);
   }
 
   /**
@@ -36,7 +40,8 @@ class BookingController extends Controller
         'total_price' => $request->total_price,
         'status' => 0,
         'user_id' => $request->user_id,
-        'place_id' => $request->place_id
+        'place_id' => $request->place_id,
+        'confirmation_code' => time()
       ]);
 
       if ($booking) {
@@ -61,7 +66,7 @@ class BookingController extends Controller
    */
   public function show(Booking $booking)
   {
-    //
+    return new BookingResource($booking);
   }
 
   /**
@@ -73,7 +78,15 @@ class BookingController extends Controller
    */
   public function update(Request $request, Booking $booking)
   {
-    //
+    $request->validate([
+      'status' => 'required|integer'
+    ]);
+
+    $booking->status = $request->status;
+
+    $booking->save();
+
+    return response(['message' => 'success'], 200);
   }
 
   /**
